@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/music_db?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    container_name: mysql_db  # Đổi tên tránh trùng tên service backend_sp
+    restart: always
+    environment:
+      - MYSQL_DATABASE=music_db
+      - MYSQL_ROOT_PASSWORD=12345
+    ports:
+      - "3307:3306"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
